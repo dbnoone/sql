@@ -1,7 +1,5 @@
 package db;
 
-import structures.ColumnRowStructure;
-
 import java.sql.*;
 
 public class DB {

@@ -8,7 +8,7 @@ public class Menu {
         System.out.println("1.Имена злодеев");
         System.out.println("2.Имена миньонов");
         System.out.println("3.Добавление миньонов");
-        System.out.println("4.Удаление миньонов");
+        System.out.println("4.Удаление злодея");
         System.out.println("5.Выход");
 
         return in.nextInt();

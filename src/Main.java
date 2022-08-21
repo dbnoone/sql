@@ -30,7 +30,7 @@ public class Main {
     }
 
     private static void villains_names() throws SQLException {
-        String query_string = "SELECT COUNT(m_v.minion_id) as count, vl.name FROM `villains` as vl inner join `minions_villains` as m_v on vl.id = m_v.villain_id group by vl.name";
+        String query_string = "SELECT COUNT(m_v.minion_id) as count, vl.name FROM `villains` as vl inner join `minions_villains` as m_v on vl.id = m_v.villain_id group by vl.name order by count desc";
         DB.query(query_string);
         while (DB.rs.next()) {
             int minions_count = DB.rs.getInt("count");
@@ -72,6 +72,8 @@ public class Main {
     }
 
     private static void add_minions() {
+        int villain_id = 0;
+        int minion_id = 0;
         int town_id = 0;
         String[] minion_data = Menu.get_line().split(" ");
         String minion_name = minion_data[1];
@@ -105,9 +107,21 @@ public class Main {
                 query_string = "insert into villains (`name`, `evilness_factor`) values ('" + villain_name + "', 'bad')";
                 DB.insert(query_string);
                 System.out.println("«лодей " + villain_name + " был добавлен.");
+                query_string = "select id from villains where name = '" + villain_name + "' and evilness_factor = 'bad'";
+                DB.query(query_string);
+                if (DB.rs.next()) {
+                    villain_id = DB.rs.getInt("id");
+                }
             }
 
             query_string = "insert into minions (name, age, town_id) values ('" + minion_name + "', '" + minion_age + "', " + town_id + ")";
+            DB.insert(query_string);
+            query_string = "select id from minions where name = '" + minion_name + "' and age = " + minion_age + " and town_id = " + town_id;
+            DB.query(query_string);
+            if (DB.rs.next()) {
+                minion_id = DB.rs.getInt("id");
+            }
+            query_string = "insert into minions_villains (minion_id, villain_id) values (" + minion_id + "," + villain_id + ")";
             DB.insert(query_string);
             System.out.println("”спешно добавлен " + minion_name + ", чтобы быть миньоном " + villain_name);
         } catch (SQLException e) {
@@ -134,7 +148,7 @@ public class Main {
                 System.out.println(minions_count + " миньонов освобождены");
             }
         } else {
-            System.out.println("«лоей с таким id не найден");
+            System.out.println("«лодей с таким id не найден");
         }
     }
 }
